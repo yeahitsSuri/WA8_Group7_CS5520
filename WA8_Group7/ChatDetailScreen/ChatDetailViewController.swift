@@ -7,12 +7,12 @@
 
 import UIKit
 
-class ChatListViewController: UIViewController {
+class ChatDetailViewController: UIViewController {
     
-    let chatListView = ChatListView()
+    let chatDetailView = ChatDetailView()
     
     override func loadView() {
-        view = chatListView
+        view = chatDetailView
     }
     
     override func viewDidLoad() {
@@ -21,13 +21,13 @@ class ChatListViewController: UIViewController {
         title = "Chats"
         
         // Setup delegates
-        chatListView.tableView.delegate = self
-        chatListView.tableView.dataSource = self
+        chatDetailView.tableView.delegate = self
+        chatDetailView.tableView.dataSource = self
         
         // Add refresh control
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refreshMessages), for: .valueChanged)
-        chatListView.tableView.refreshControl = refreshControl
+        chatDetailView.tableView.refreshControl = refreshControl
     
         scrollToBottom(animated: false)
     }
@@ -35,28 +35,28 @@ class ChatListViewController: UIViewController {
     // Helper method for scrolling to bottom
     private func scrollToBottom(animated: Bool) {
         DispatchQueue.main.async {
-            let indexPath = IndexPath(row: self.chatListView.messages.count - 1, section: 0)
-            self.chatListView.tableView.scrollToRow(at: indexPath, at: .bottom, animated: animated)
+            let indexPath = IndexPath(row: self.chatDetailView.messages.count - 1, section: 0)
+            self.chatDetailView.tableView.scrollToRow(at: indexPath, at: .bottom, animated: animated)
         }
     }
 
     @objc private func refreshMessages() {
-        chatListView.tableView.refreshControl?.endRefreshing()
+        chatDetailView.tableView.refreshControl?.endRefreshing()
     }
 }
 
 
 
 // MARK: - UITableView Delegate & DataSource
-extension ChatListViewController: UITableViewDelegate, UITableViewDataSource {
+extension ChatDetailViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return chatListView.messages.count
+        return chatDetailView.messages.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableCellView
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! MessageTableCellView
         
-        let message = chatListView.messages[indexPath.row]
+        let message = chatDetailView.messages[indexPath.row]
         cell.configure(
             sender: message.sender,
             message: message.text,

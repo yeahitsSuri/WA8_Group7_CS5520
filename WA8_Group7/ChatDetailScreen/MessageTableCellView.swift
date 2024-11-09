@@ -1,5 +1,5 @@
 //
-//  TableCellView.swift
+//  MessageTableCellView.swift
 //  WA8_Group7
 //
 //  Created by 杨天舒 on 11/9/24.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class TableCellView: UITableViewCell {
+class MessageTableCellView: UITableViewCell {
     
     // MARK: - UI Elements
     var wrapperView: UIView!

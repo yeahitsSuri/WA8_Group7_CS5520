@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ChatListView: UIView {
+class ChatDetailView: UIView {
     
     // MARK: - UI Elements
     let tableView: UITableView!
@@ -36,7 +36,7 @@ class ChatListView: UIView {
         self.backgroundColor = .white
         
         // Setup TableView
-        tableView.register(TableCellView.self, forCellReuseIdentifier: "cell")
+        tableView.register(MessageTableCellView.self, forCellReuseIdentifier: "cell")
         tableView.separatorStyle = .none
         tableView.allowsSelection = false
         addSubview(tableView)
