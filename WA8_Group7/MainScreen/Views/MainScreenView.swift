@@ -11,6 +11,7 @@ class MainScreenView: UIView {
 
     var profilePic: UIImageView!
     var labelText: UILabel!
+    var tableView: UITableView!
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -18,7 +19,15 @@ class MainScreenView: UIView {
         
         setupProfilePic()
         setupLabelText()
+        setupTabelView()
         initConstraints()
+    }
+    
+    func setupTabelView(){
+        tableView = UITableView()
+        tableView.separatorStyle = .none
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(tableView)
     }
 
     func setupProfilePic(){
@@ -49,6 +58,11 @@ class MainScreenView: UIView {
             labelText.topAnchor.constraint(equalTo: profilePic.topAnchor),
             labelText.bottomAnchor.constraint(equalTo: profilePic.bottomAnchor),
             labelText.leadingAnchor.constraint(equalTo: profilePic.trailingAnchor, constant: 8),
+            
+            tableView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
             
         ])
     }
