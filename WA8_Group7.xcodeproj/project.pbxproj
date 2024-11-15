@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2E4F94604431E92864A4F20F /* Pods_WA8_Group7.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 536E034AE7251CBACCC85452 /* Pods_WA8_Group7.framework */; };
 		4B0F22552CE05BF30036D5EB /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0F22542CE05BF30036D5EB /* MessageCell.swift */; };
 		4B0F22572CE05C280036D5EB /* SelfMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0F22562CE05C280036D5EB /* SelfMessageCell.swift */; };
 		4B0F22592CE05C860036D5EB /* OtherMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0F22582CE05C860036D5EB /* OtherMessageCell.swift */; };
@@ -28,6 +27,8 @@
 		8BE27A462CE2043A00D6947D /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 8BE27A452CE2043A00D6947D /* FirebaseAuth */; };
 		8BE27A482CE2043A00D6947D /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 8BE27A472CE2043A00D6947D /* FirebaseFirestore */; };
 		8BE27A4A2CE2043A00D6947D /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 8BE27A492CE2043A00D6947D /* FirebaseStorage */; };
+		D08795E12CE74755001DD353 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D08795E02CE74755001DD353 /* GoogleService-Info.plist */; };
+		D0B312322CE58FF600CFF972 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = D0B312312CE58FF600CFF972 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,9 +50,8 @@
 		4B9DBA302CE02E9F00A6D75B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4B9DBA322CE02E9F00A6D75B /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		536E034AE7251CBACCC85452 /* Pods_WA8_Group7.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WA8_Group7.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		56B6E65EBADAB47F3DC14894 /* Pods-WA8_Group7.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WA8_Group7.debug.xcconfig"; path = "Target Support Files/Pods-WA8_Group7/Pods-WA8_Group7.debug.xcconfig"; sourceTree = "<group>"; };
 		8B027D462CE2DC7D0037478A /* RightBarButtonManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightBarButtonManager.swift; sourceTree = "<group>"; };
-		C2F8814868D9BEABAD39A029 /* Pods-WA8_Group7.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WA8_Group7.release.xcconfig"; path = "Target Support Files/Pods-WA8_Group7/Pods-WA8_Group7.release.xcconfig"; sourceTree = "<group>"; };
+		D08795E02CE74755001DD353 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D0B311D02CE0192C00CFF972 /* WA8_Group7.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WA8_Group7.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -66,7 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2E4F94604431E92864A4F20F /* Pods_WA8_Group7.framework in Frameworks */,
+				D0B312322CE58FF600CFF972 /* Alamofire in Frameworks */,
 				8BE27A4A2CE2043A00D6947D /* FirebaseStorage in Frameworks */,
 				8BE27A462CE2043A00D6947D /* FirebaseAuth in Frameworks */,
 				8BE27A482CE2043A00D6947D /* FirebaseFirestore in Frameworks */,
@@ -128,6 +128,7 @@
 				4B9DBA2A2CE02E9F00A6D75B /* MainScreen */,
 				4B9DBA2B2CE02E9F00A6D75B /* AppDelegate.swift */,
 				4B9DBA2C2CE02E9F00A6D75B /* Assets.xcassets */,
+				D08795E02CE74755001DD353 /* GoogleService-Info.plist */,
 				4B9DBA2D2CE02E9F00A6D75B /* Info.plist */,
 				4B9DBA2F2CE02E9F00A6D75B /* LaunchScreen.storyboard */,
 				4B9DBA312CE02E9F00A6D75B /* Main.storyboard */,
@@ -144,21 +145,11 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		A7B6F3D4D3F7BB54C87D916B /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				56B6E65EBADAB47F3DC14894 /* Pods-WA8_Group7.debug.xcconfig */,
-				C2F8814868D9BEABAD39A029 /* Pods-WA8_Group7.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		D0B311C72CE0192C00CFF972 = {
 			isa = PBXGroup;
 			children = (
 				4B9DBA332CE02E9F00A6D75B /* WA8_Group7 */,
 				D0B311D12CE0192C00CFF972 /* Products */,
-				A7B6F3D4D3F7BB54C87D916B /* Pods */,
 				683B19180BCF41D078DC13EB /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -178,11 +169,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D0B311E32CE0192D00CFF972 /* Build configuration list for PBXNativeTarget "WA8_Group7" */;
 			buildPhases = (
-				F283E4BB1971ABA2A252D230 /* [CP] Check Pods Manifest.lock */,
 				D0B311CC2CE0192C00CFF972 /* Sources */,
 				D0B311CD2CE0192C00CFF972 /* Frameworks */,
 				D0B311CE2CE0192C00CFF972 /* Resources */,
-				23DDFA7CD2AD2573C415617D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -225,6 +214,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				8BE27A442CE2043A00D6947D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				D0B312302CE58FF600CFF972 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			productRefGroup = D0B311D12CE0192C00CFF972 /* Products */;
 			projectDirPath = "";
@@ -241,54 +231,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B9DBA342CE02E9F00A6D75B /* Assets.xcassets in Resources */,
+				D08795E12CE74755001DD353 /* GoogleService-Info.plist in Resources */,
 				4B9DBA362CE02E9F00A6D75B /* LaunchScreen.storyboard in Resources */,
 				4B9DBA372CE02E9F00A6D75B /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		23DDFA7CD2AD2573C415617D /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WA8_Group7/Pods-WA8_Group7-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WA8_Group7/Pods-WA8_Group7-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WA8_Group7/Pods-WA8_Group7-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F283E4BB1971ABA2A252D230 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WA8_Group7-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		D0B311CC2CE0192C00CFF972 /* Sources */ = {
@@ -336,7 +285,6 @@
 /* Begin XCBuildConfiguration section */
 		D0B311E42CE0192D00CFF972 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 56B6E65EBADAB47F3DC14894 /* Pods-WA8_Group7.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -365,7 +313,6 @@
 		};
 		D0B311E52CE0192D00CFF972 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C2F8814868D9BEABAD39A029 /* Pods-WA8_Group7.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -543,6 +490,14 @@
 				minimumVersion = 11.4.0;
 			};
 		};
+		D0B312302CE58FF600CFF972 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -560,6 +515,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8BE27A442CE2043A00D6947D /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		D0B312312CE58FF600CFF972 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D0B312302CE58FF600CFF972 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
