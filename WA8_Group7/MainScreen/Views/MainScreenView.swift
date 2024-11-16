@@ -12,7 +12,8 @@ class MainScreenView: UIView {
     var profilePic: UIImageView!
     var labelText: UILabel!
     var tableView: UITableView!
-
+    var contactsButton: UIButton!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
@@ -20,7 +21,15 @@ class MainScreenView: UIView {
         setupProfilePic()
         setupLabelText()
         setupTabelView()
+        setupContactsButton()
         initConstraints()
+    }
+    
+    func setupContactsButton() {
+        contactsButton = UIButton(type: .system)
+        contactsButton.setTitle("My Contacts", for: .normal)
+        contactsButton.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(contactsButton)
     }
     
     func setupTabelView(){
@@ -62,7 +71,10 @@ class MainScreenView: UIView {
             tableView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            contactsButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            contactsButton.centerXAnchor.constraint(equalTo: centerXAnchor)
             
         ])
     }

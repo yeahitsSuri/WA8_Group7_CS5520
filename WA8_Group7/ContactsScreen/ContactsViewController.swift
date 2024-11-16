@@ -4,29 +4,25 @@
 //
 //  Created by 杨天舒 on 11/15/24.
 //
-
 import UIKit
 import FirebaseFirestore
-import FirebaseAuth
-import FirebaseFirestoreSwift
 
 class ContactsViewController: UIViewController {
-    var contacts: [User] = []
-    let tableView = UITableView()
+    var contacts: [Contact] = []
+    let contactsView = ContactsView()
+
+    override func loadView() {
+        view = contactsView
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Contacts"
-        setupTableView()
+        contactsView.tableView.delegate = self
+        contactsView.tableView.dataSource = self
+        contactsView.backgroundColor = .white
+        contactsView.tableView.register(ContactTableViewCell.self, forCellReuseIdentifier: "ContactCell")
         fetchContacts()
-    }
-
-    func setupTableView() {
-        tableView.delegate = self
-        tableView.dataSource = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ContactCell")
-        tableView.frame = view.bounds
-        view.addSubview(tableView)
     }
 
     func fetchContacts() {
@@ -36,23 +32,40 @@ class ContactsViewController: UIViewController {
                 print("Error fetching contacts: \(error)")
             } else {
                 self.contacts = snapshot?.documents.compactMap { document in
-                    try? document.data(as: User.self)
+                    try? document.data(as: Contact.self)
                 } ?? []
-                self.tableView.reloadData()
+                self.contactsView.tableView.reloadData()
             }
         }
     }
 }
 
+// MARK: - UITableViewDataSource & UITableViewDelegate
 extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return contacts.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ContactCell", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ContactCell", for: indexPath) as? ContactTableViewCell else {
+            return UITableViewCell()
+        }
         let contact = contacts[indexPath.row]
-        cell.textLabel?.text = contact.name
+        cell.configure(with: contact) { [weak self] in
+            self?.initiateChat(with: contact)
+        }
         return cell
+    }
+
+    private func initiateChat(with contact: Contact) {
+        // Logic to initiate a new chat with the contact
+        // For example, add the chat to the chat list and navigate to the chat detail screen
+        let newChat = Chat(name: contact.name, lastMessage: "", timestamp: Date())
+        // Assuming you have a reference to the main screen or chat list
+        // mainScreen.chats.append(newChat)
+        // Navigate to chat detail screen
+        let chatDetailVC = ChatDetailViewController()
+        chatDetailVC.title = contact.name
+        navigationController?.pushViewController(chatDetailVC, animated: true)
     }
 }

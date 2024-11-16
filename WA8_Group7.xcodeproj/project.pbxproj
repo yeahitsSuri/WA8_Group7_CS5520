@@ -27,6 +27,7 @@
 		8BE27A482CE2043A00D6947D /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 8BE27A472CE2043A00D6947D /* FirebaseFirestore */; };
 		8BE27A4A2CE2043A00D6947D /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 8BE27A492CE2043A00D6947D /* FirebaseStorage */; };
 		D08795E12CE74755001DD353 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D08795E02CE74755001DD353 /* GoogleService-Info.plist */; };
+		D09321772CE8147A00D00AE5 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = D09321762CE8147A00D00AE5 /* Contact.swift */; };
 		D0B312322CE58FF600CFF972 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = D0B312312CE58FF600CFF972 /* Alamofire */; };
 /* End PBXBuildFile section */
 
@@ -51,6 +52,7 @@
 		536E034AE7251CBACCC85452 /* Pods_WA8_Group7.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WA8_Group7.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B027D462CE2DC7D0037478A /* RightBarButtonManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightBarButtonManager.swift; sourceTree = "<group>"; };
 		D08795E02CE74755001DD353 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		D09321762CE8147A00D00AE5 /* Contact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
 		D0B311D02CE0192C00CFF972 /* WA8_Group7.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WA8_Group7.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -58,6 +60,7 @@
 		8B027D4A2CE2DC9E0037478A /* Progress Indicator */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Progress Indicator"; sourceTree = "<group>"; };
 		8B027D522CE2DCB00037478A /* Register Screen */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Register Screen"; sourceTree = "<group>"; };
 		8BE27A4B2CE2965400D6947D /* Views */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Views; sourceTree = "<group>"; };
+		D09321782CE8147E00D00AE5 /* ContactsScreen */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = ContactsScreen; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				4B9DBA262CE02E9F00A6D75B /* Chat.swift */,
+				D09321762CE8147A00D00AE5 /* Contact.swift */,
 				4B9DBA272CE02E9F00A6D75B /* Message.swift */,
 				4B0F22542CE05BF30036D5EB /* MessageCell.swift */,
 			);
@@ -117,6 +121,7 @@
 		4B9DBA332CE02E9F00A6D75B /* WA8_Group7 */ = {
 			isa = PBXGroup;
 			children = (
+				D09321782CE8147E00D00AE5 /* ContactsScreen */,
 				4B9DBA212CE02E9F00A6D75B /* ChatDetailScreen */,
 				4B9DBA252CE02E9F00A6D75B /* ChatListScreen */,
 				4B9DBA282CE02E9F00A6D75B /* Data Models */,
@@ -180,6 +185,7 @@
 				8B027D4A2CE2DC9E0037478A /* Progress Indicator */,
 				8B027D522CE2DCB00037478A /* Register Screen */,
 				8BE27A4B2CE2965400D6947D /* Views */,
+				D09321782CE8147E00D00AE5 /* ContactsScreen */,
 			);
 			name = WA8_Group7;
 			productName = WA8_Group7;
@@ -249,6 +255,7 @@
 				4B9DBA392CE02E9F00A6D75B /* ChatDetailViewController.swift in Sources */,
 				4B9DBA3B2CE02E9F00A6D75B /* ChatListTableViewCell.swift in Sources */,
 				4B0F22552CE05BF30036D5EB /* MessageCell.swift in Sources */,
+				D09321772CE8147A00D00AE5 /* Contact.swift in Sources */,
 				8B027D472CE2DC7D0037478A /* RightBarButtonManager.swift in Sources */,
 				4B9DBA3E2CE02E9F00A6D75B /* Chat.swift in Sources */,
 				4B0F22572CE05C280036D5EB /* SelfMessageCell.swift in Sources */,

@@ -58,11 +58,39 @@ class ViewController: UIViewController {
         mainScreen.tableView.delegate = self
         mainScreen.tableView.dataSource = self
         mainScreen.tableView.register(ChatListTableViewCell.self, forCellReuseIdentifier: "ChatListCell")
+
+        let contactsButton = UIBarButtonItem(title: "Contacts", style: .plain, target: self, action: #selector(showContacts))
+        navigationItem.rightBarButtonItem = contactsButton
+
+        mainScreen.contactsButton.addTarget(self, action: #selector(showContacts), for: .touchUpInside) // Add this line
+    }
+
+    @objc func showContacts() {
+        let contactsVC = ContactsViewController()
+        navigationController?.pushViewController(contactsVC, animated: true)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        Auth.auth().removeStateDidChangeListener(handleAuth!)
+        super.viewWillAppear(animated)
+    
+        handleAuth = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                if user == nil {
+                    self.currentUser = nil
+                    self.mainScreen.labelText.text = "Please sign in to see the chats!"
+                    self.setupRightBarButton(isLoggedin: false)
+                    self.mainScreen.tableView.isHidden = true
+                } else {
+                    self.currentUser = user
+                    self.mainScreen.labelText.isHidden = true
+                    self.mainScreen.profilePic.isHidden = true
+                    self.setupRightBarButton(isLoggedin: true)
+                    self.mainScreen.tableView.isHidden = false
+                    self.mainScreen.tableView.reloadData()
+                }
+            }
+        }
     }
 }
 

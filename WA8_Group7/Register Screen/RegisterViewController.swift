@@ -44,6 +44,11 @@ class RegisterViewController: UIViewController {
                 showAlert(message: "Please enter a valid email address.")
                 return false
             }
+
+            if password.count < 6 {
+            showAlert(message: "Password must be 6 characters or more.")
+                return false
+            }
             
             if password != repeatPassword {
                 showAlert(message: "Passwords do not match. Please try again.")
