@@ -102,7 +102,7 @@ class ViewController: UIViewController {
         let contactsButton = UIBarButtonItem(title: "Contacts", style: .plain, target: self, action: #selector(showContacts))
      
 
-        mainScreen.contactsButton.addTarget(self, action: #selector(showContacts), for: .touchUpInside) // Add this line
+        mainScreen.contactsButton.addTarget(self, action: #selector(showContacts), for: .touchUpInside)
     }
 
     @objc func showContacts() {
