@@ -121,26 +121,6 @@ class ChatDetailViewController: UIViewController {
             }
         }
     }
-    
-    func getUserName(for email: String, completion: @escaping (String) -> Void) {
-        let db = Firestore.firestore()
-        db.collection("users")
-            .whereField("email", isEqualTo: email)
-            .getDocuments { (snapshot, error) in
-                if let error = error {
-                    print("Error fetching user: \(error)")
-                    completion(email) // Fallback to email if error
-                    return
-                }
-                
-                if let document = snapshot?.documents.first,
-                   let name = document.data()["name"] as? String {
-                    completion(name)
-                } else {
-                    completion(email) // Fallback to email if user not found
-                }
-            }
-    }
 }
 
 extension ChatDetailViewController: UITableViewDelegate, UITableViewDataSource {
