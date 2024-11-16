@@ -14,12 +14,7 @@ class ChatDetailView: UIView {
     let messageTextField = UITextField()
     let sendButton = UIButton(type: .system)
     
-    var messages: [Message] = [
-        Message(sender: "John", text: "Hello there!", timestamp: Date(), isCurrentUser: false),
-        Message(sender: "Me", text: "Hi John!", timestamp: Date(), isCurrentUser: true),
-        Message(sender: "John", text: "How are you?", timestamp: Date(), isCurrentUser: false),
-        Message(sender: "Me", text: "I'm doing great, thanks!", timestamp: Date(), isCurrentUser: true)
-    ]
+    var messages: [Message] = []
     
     override init(frame: CGRect) {
         tableView = UITableView()

@@ -6,6 +6,7 @@
 //
 import UIKit
 import FirebaseFirestore
+import FirebaseAuth
 
 class ContactsViewController: UIViewController {
     var contacts: [Contact] = []
@@ -58,14 +59,47 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     private func initiateChat(with contact: Contact) {
-        // Logic to initiate a new chat with the contact
-        // For example, add the chat to the chat list and navigate to the chat detail screen
-        let newChat = Chat(name: contact.name, lastMessage: "", timestamp: Date())
-        // Assuming you have a reference to the main screen or chat list
-        // mainScreen.chats.append(newChat)
-        // Navigate to chat detail screen
-        let chatDetailVC = ChatDetailViewController()
-        chatDetailVC.title = contact.name
-        navigationController?.pushViewController(chatDetailVC, animated: true)
+        guard let currentUser = Auth.auth().currentUser else {
+            print("No user is signed in.")
+            return
+        }
+        
+        let db = Firestore.firestore()
+        let newChatRef = db.collection("chats").document()
+        let currentTime = Date()
+        
+        let newChat = Chat(
+            id: newChatRef.documentID,
+            name: contact.name,
+            lastMessage: "",
+            timestamp: currentTime,
+            participants: [currentUser.email ?? "Unknown", contact.email]
+        )
+        
+        newChatRef.setData([
+            "id": newChat.id,
+            "name": newChat.name,
+            "lastMessage": newChat.lastMessage,
+            "timestamp": newChat.timestamp,
+            "participants": newChat.participants
+        ]) { error in
+         
+            if let error = error {
+                print("Error saving chat: \(error)")
+                return
+            }
+            
+            // Add the new chat to the chat list
+            if let mainVC = self.navigationController?.viewControllers.first(where: { $0 is ViewController }) as? ViewController {
+                mainVC.chats.append(newChat)
+                mainVC.mainScreen.tableView.reloadData()
+            }
+            
+            // Navigate to chat detail screen
+            let chatDetailVC = ChatDetailViewController()
+            chatDetailVC.chatId = newChat.id
+            chatDetailVC.title = contact.name
+            self.navigationController?.pushViewController(chatDetailVC, animated: true)
+        }
     }
 }

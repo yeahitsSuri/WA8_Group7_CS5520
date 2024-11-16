@@ -7,9 +7,8 @@
 
 import Foundation
 
-struct Message {
-    let sender: String
+struct Message: Codable {
+    var sender: String
     let text: String
     let timestamp: Date
-    let isCurrentUser: Bool
 }

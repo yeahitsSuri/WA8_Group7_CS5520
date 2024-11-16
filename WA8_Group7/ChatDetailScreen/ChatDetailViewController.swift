@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import FirebaseFirestore
+import FirebaseAuth
 
 class ChatDetailViewController: UIViewController {
     
     let chatDetailView = ChatDetailView()
+    var chatId: String?
     
     override func loadView() {
         view = chatDetailView
@@ -27,12 +30,33 @@ class ChatDetailViewController: UIViewController {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refreshMessages), for: .valueChanged)
         chatDetailView.tableView.refreshControl = refreshControl
-    
+
+        fetchChatHistory()
         scrollToBottom(animated: false)
+    }
+    
+    func fetchChatHistory() {
+        guard let chatId = chatId else { return }
+        let db = Firestore.firestore()
+        db.collection("chats").document(chatId).collection("messages").order(by: "timestamp").getDocuments { (snapshot, error) in
+            if let error = error {
+                print("Error fetching messages: \(error)")
+            } else {
+                self.chatDetailView.messages = snapshot?.documents.compactMap { document in
+                    try? document.data(as: Message.self)
+                } ?? []
+                self.chatDetailView.tableView.reloadData()
+                // Only scroll if we have messages
+                if !self.chatDetailView.messages.isEmpty {
+                    self.scrollToBottom(animated: true)
+                }
+            }
+        }
     }
 
     private func scrollToBottom(animated: Bool) {
         DispatchQueue.main.async {
+            guard self.chatDetailView.messages.count > 0 else { return }
             let indexPath = IndexPath(row: self.chatDetailView.messages.count - 1, section: 0)
             self.chatDetailView.tableView.scrollToRow(at: indexPath, at: .bottom, animated: animated)
         }
@@ -44,13 +68,76 @@ class ChatDetailViewController: UIViewController {
     
     @objc private func sendMessage() {
         guard let text = chatDetailView.messageTextField.text, !text.isEmpty else { return }
+        guard let chatId = chatId else {
+            print("Chat ID is nil")
+            return
+        }
+        guard let currentUser = Auth.auth().currentUser else {
+            print("No user is signed in")
+            return
+        }
         
-        let newMessage = Message(sender: "Me", text: text, timestamp: Date(), isCurrentUser: true)
-        chatDetailView.messages.append(newMessage)
-        chatDetailView.messageTextField.text = ""
+        let newMessage = Message(
+            sender: currentUser.email ?? "Unknown",
+            text: text,
+            timestamp: Date()
+        )
         
-        chatDetailView.tableView.reloadData()
-        scrollToBottom(animated: true)
+        let db = Firestore.firestore()
+        db.collection("chats").document(chatId).collection("messages").addDocument(data: [
+            "sender": newMessage.sender,
+            "text": newMessage.text,
+            "timestamp": newMessage.timestamp
+        ]) { error in
+            if let error = error {
+                print("Error sending message: \(error)")
+            } else {
+                DispatchQueue.main.async {
+                    self.chatDetailView.messages.append(newMessage)
+                    self.chatDetailView.messageTextField.text = ""
+                    self.chatDetailView.tableView.reloadData()
+                    self.scrollToBottom(animated: true)
+                    self.updateLatestMessage(text)
+                }
+            }
+        }
+    }
+
+    func updateLatestMessage(_ text: String) {
+        guard let chatId = chatId else {
+            print("Chat ID is nil")
+            return
+        }
+        
+        let db = Firestore.firestore()
+        db.collection("chats").document(chatId).updateData([
+            "lastMessage": text,
+            "timestamp": Date()
+        ]) { error in
+            if let error = error {
+                print("Error updating latest message: \(error)")
+            }
+        }
+    }
+    
+    func getUserName(for email: String, completion: @escaping (String) -> Void) {
+        let db = Firestore.firestore()
+        db.collection("users")
+            .whereField("email", isEqualTo: email)
+            .getDocuments { (snapshot, error) in
+                if let error = error {
+                    print("Error fetching user: \(error)")
+                    completion(email) // Fallback to email if error
+                    return
+                }
+                
+                if let document = snapshot?.documents.first,
+                   let name = document.data()["name"] as? String {
+                    completion(name)
+                } else {
+                    completion(email) // Fallback to email if user not found
+                }
+            }
     }
 }
 
@@ -61,8 +148,10 @@ extension ChatDetailViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let message = chatDetailView.messages[indexPath.row]
-        let identifier = message.isCurrentUser ? "SelfMessageCell" : "OtherMessageCell"
+        let currentUserEmail = Auth.auth().currentUser?.email
+        let isCurrentUser = message.sender == currentUserEmail
         
+        let identifier = isCurrentUser ? "SelfMessageCell" : "OtherMessageCell"
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath) as! MessageCell
         cell.configure(with: message)
         return cell

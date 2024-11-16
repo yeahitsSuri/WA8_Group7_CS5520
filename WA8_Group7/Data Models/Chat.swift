@@ -6,8 +6,10 @@
 //
 import Foundation
 
-struct Chat {
+struct Chat: Codable {
+    let id: String
     let name: String
     let lastMessage: String
     let timestamp: Date
+    let participants: [String]
 }

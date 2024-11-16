@@ -6,24 +6,13 @@
 //
 import UIKit
 import FirebaseAuth
+import FirebaseFirestore
 
 class ViewController: UIViewController {
     let mainScreen = MainScreenView()
-    
-    var chats: [Chat] = [
-        Chat(name: "John Doe",
-             lastMessage: "Hey, how are you?",
-             timestamp: Date()), // Today
-        Chat(name: "Jane Smith",
-             lastMessage: "Let's catch up soon!",
-             timestamp: Calendar.current.date(byAdding: .day, value: -1, to: Date())!),
-        Chat(name: "Group Chat",
-             lastMessage: "Meeting at 5 PM",
-             timestamp: Calendar.current.date(from: DateComponents(year: 2024, month: 11, day: 1))!)
-    ]
-
     var handleAuth: AuthStateDidChangeListenerHandle?
     var currentUser:FirebaseAuth.User?
+    var chats: [Chat] = []
     
     override func loadView() {
         view = mainScreen
@@ -32,22 +21,41 @@ class ViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        //MARK: handling if the Authentication state is changed (sign in, sign out, register)...
-        handleAuth = Auth.auth().addStateDidChangeListener{ auth, user in
-            if user == nil{
-                self.currentUser = nil
-                self.mainScreen.labelText.text = "Please sign in to see the chats!"
-                self.setupRightBarButton(isLoggedin: false)
-                self.mainScreen.tableView.isHidden = true
-                
-            }else{
-                self.currentUser = user
-                self.mainScreen.labelText.isHidden = true
-                self.mainScreen.profilePic.isHidden = true 
-                self.setupRightBarButton(isLoggedin: true)
-                self.mainScreen.tableView.isHidden = false
-                self.mainScreen.tableView.reloadData()
-            }
+        if let currentUser = Auth.auth().currentUser {
+            self.currentUser = currentUser
+            self.mainScreen.labelText.isHidden = true
+            self.mainScreen.profilePic.isHidden = true
+            self.setupRightBarButton(isLoggedin: true)
+            self.mainScreen.tableView.isHidden = false
+            self.fetchChats()
+        } else {
+            self.currentUser = nil
+            self.mainScreen.labelText.text = "Please sign in to see the chats!"
+            self.setupRightBarButton(isLoggedin: false)
+            self.mainScreen.tableView.isHidden = true
+        }
+    }
+    
+    func fetchChats() {
+        guard let currentUserEmail = Auth.auth().currentUser?.email else {
+            print("No user email found")
+            return
+        }
+        
+        let db = Firestore.firestore()
+        db.collection("chats")
+            .whereField("participants", arrayContains: currentUserEmail)
+            .order(by: "timestamp", descending: true)  // Add composite idx to sort
+            .getDocuments { (snapshot, error) in
+                if let error = error {
+                    print("Error fetching chats: \(error)")
+                } else {
+                    self.chats = snapshot?.documents.compactMap { document in
+                        try? document.data(as: Chat.self)
+                    } ?? []
+                    print("Fetched chats: \(self.chats)")
+                    self.mainScreen.tableView.reloadData()
+                }
         }
     }
     
@@ -60,7 +68,7 @@ class ViewController: UIViewController {
         mainScreen.tableView.register(ChatListTableViewCell.self, forCellReuseIdentifier: "ChatListCell")
 
         let contactsButton = UIBarButtonItem(title: "Contacts", style: .plain, target: self, action: #selector(showContacts))
-        navigationItem.rightBarButtonItem = contactsButton
+     
 
         mainScreen.contactsButton.addTarget(self, action: #selector(showContacts), for: .touchUpInside) // Add this line
     }
@@ -115,6 +123,56 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let chatDetailVC = ChatDetailViewController()
+        chatDetailVC.chatId = chats[indexPath.row].id
+        chatDetailVC.title = chats[indexPath.row].name 
         navigationController?.pushViewController(chatDetailVC, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (action, view, completion) in
+            guard let self = self else { return }
+            let chatToDelete = self.chats[indexPath.row]
+            self.deleteChat(chatToDelete)
+            completion(true)
+        }
+        
+        return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
+
+    private func deleteChat(_ chat: Chat) {
+        let db = Firestore.firestore()
+        let chatRef = db.collection("chats").document(chat.id)
+        
+        // First delete all messages in the chat
+        chatRef.collection("messages").getDocuments { (snapshot, error) in
+            if let error = error {
+                print("Error getting messages: \(error)")
+                return
+            }
+            
+            // Delete each message document
+            let batch = db.batch()
+            snapshot?.documents.forEach { document in
+                batch.deleteDocument(document.reference)
+            }
+            
+            // Delete the chat document itself
+            batch.deleteDocument(chatRef)
+            
+            // Commit the batch
+            batch.commit { error in
+                if let error = error {
+                    print("Error deleting chat: \(error)")
+                } else {
+                    // Remove from local array and update UI
+                    if let index = self.chats.firstIndex(where: { $0.id == chat.id }) {
+                        self.chats.remove(at: index)
+                        DispatchQueue.main.async {
+                            self.mainScreen.tableView.reloadData()
+                        }
+                    }
+                }
+            }
+        }
     }
 }
