@@ -82,7 +82,7 @@ class OtherMessageCell: UITableViewCell, MessageCell {
     }
     
     func configure(with message: Message) {
-        senderLabel.text = message.sender
+        senderLabel.text = message.senderName
         messageLabel.text = message.text
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM/dd/yyyy HH:mm"

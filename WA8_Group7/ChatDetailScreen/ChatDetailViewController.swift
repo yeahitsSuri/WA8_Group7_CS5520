@@ -78,6 +78,7 @@ class ChatDetailViewController: UIViewController {
         }
         
         let newMessage = Message(
+            senderName: currentUser.displayName ?? "Unknown",
             sender: currentUser.email ?? "Unknown",
             text: text,
             timestamp: Date()
@@ -85,6 +86,7 @@ class ChatDetailViewController: UIViewController {
         
         let db = Firestore.firestore()
         db.collection("chats").document(chatId).collection("messages").addDocument(data: [
+            "senderName": newMessage.senderName,
             "sender": newMessage.sender,
             "text": newMessage.text,
             "timestamp": newMessage.timestamp
