@@ -45,16 +45,30 @@ class ViewController: UIViewController {
         let db = Firestore.firestore()
         db.collection("chats")
             .whereField("participants", arrayContains: currentUserEmail)
-            .order(by: "timestamp", descending: true)  // Add composite idx to sort
+            .order(by: "timestamp", descending: true)
             .getDocuments { (snapshot, error) in
                 if let error = error {
                     print("Error fetching chats: \(error)")
                 } else {
                     self.chats = snapshot?.documents.compactMap { document in
-                        try? document.data(as: Chat.self)
+                        let data = document.data()
+                        guard let participants = data["participants"] as? [String],
+                              let lastMessage = data["lastMessage"] as? String,
+                              let timestamp = data["timestamp"] as? Timestamp else {
+                            return nil
+                        }
+                        let otherUserName = participants.first(where: { $0 != currentUserEmail }) ?? "Unknown"
+                        return Chat(
+                            id: document.documentID,
+                            name: otherUserName,
+                            lastMessage: lastMessage,
+                            timestamp: timestamp.dateValue(),
+                            participants: participants
+                        )
                     } ?? []
-                    print("Fetched chats: \(self.chats)")
-                    self.mainScreen.tableView.reloadData()
+                    DispatchQueue.main.async {
+                        self.mainScreen.tableView.reloadData()
+                    }
                 }
         }
     }
