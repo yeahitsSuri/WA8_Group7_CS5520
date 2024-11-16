@@ -65,41 +65,67 @@ extension ContactsViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         let db = Firestore.firestore()
-        let newChatRef = db.collection("chats").document()
-        let currentTime = Date()
+        let participants = [currentUser.email ?? "Unknown", contact.email].sorted()
         
-        let newChat = Chat(
-            id: newChatRef.documentID,
-            name: contact.name,
-            lastMessage: "",
-            timestamp: currentTime,
-            participants: [currentUser.email ?? "Unknown", contact.email]
-        )
-        
-        newChatRef.setData([
-            "id": newChat.id,
-            "name": newChat.name,
-            "lastMessage": newChat.lastMessage,
-            "timestamp": newChat.timestamp,
-            "participants": newChat.participants
-        ]) { error in
-         
-            if let error = error {
-                print("Error saving chat: \(error)")
-                return
+        // Check if a chat already exists
+        db.collection("chats")
+            .whereField("participants", arrayContains: participants[0])
+            .getDocuments { (snapshot, error) in
+                if let error = error {
+                    print("Error checking existing chats: \(error)")
+                    return
+                }
+                
+                if let documents = snapshot?.documents {
+                    for document in documents {
+                        let chatParticipants = document.data()["participants"] as? [String] ?? []
+                        if chatParticipants.sorted() == participants {
+                            // Chat already exists, navigate to chat detail screen
+                            let chatDetailVC = ChatDetailViewController()
+                            chatDetailVC.chatId = document.documentID
+                            chatDetailVC.title = contact.name
+                            self.navigationController?.pushViewController(chatDetailVC, animated: true)
+                            return
+                        }
+                    }
+                }
+                
+                // If no existing chat, create a new one
+                let newChatRef = db.collection("chats").document()
+                let currentTime = Date()
+                
+                let newChat = Chat(
+                    id: newChatRef.documentID,
+                    name: contact.name,
+                    lastMessage: "",
+                    timestamp: currentTime,
+                    participants: participants
+                )
+                
+                newChatRef.setData([
+                    "id": newChat.id,
+                    "name": newChat.name,
+                    "lastMessage": newChat.lastMessage,
+                    "timestamp": newChat.timestamp,
+                    "participants": newChat.participants
+                ]) { error in
+                    if let error = error {
+                        print("Error saving chat: \(error)")
+                        return
+                    }
+                    
+                    // Add the new chat to the chat list
+                    if let mainVC = self.navigationController?.viewControllers.first(where: { $0 is ViewController }) as? ViewController {
+                        mainVC.chats.append(newChat)
+                        mainVC.mainScreen.tableView.reloadData()
+                    }
+                    
+                    // Navigate to chat detail screen
+                    let chatDetailVC = ChatDetailViewController()
+                    chatDetailVC.chatId = newChat.id
+                    chatDetailVC.title = contact.name
+                    self.navigationController?.pushViewController(chatDetailVC, animated: true)
+                }
             }
-            
-            // Add the new chat to the chat list
-            if let mainVC = self.navigationController?.viewControllers.first(where: { $0 is ViewController }) as? ViewController {
-                mainVC.chats.append(newChat)
-                mainVC.mainScreen.tableView.reloadData()
-            }
-            
-            // Navigate to chat detail screen
-            let chatDetailVC = ChatDetailViewController()
-            chatDetailVC.chatId = newChat.id
-            chatDetailVC.title = contact.name
-            self.navigationController?.pushViewController(chatDetailVC, animated: true)
-        }
     }
 }
