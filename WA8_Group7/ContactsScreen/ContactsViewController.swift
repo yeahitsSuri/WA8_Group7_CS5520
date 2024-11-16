@@ -27,13 +27,19 @@ class ContactsViewController: UIViewController {
     }
 
     func fetchContacts() {
+        guard let currentUserEmail = Auth.auth().currentUser?.email else {
+            print("No user is signed in.")
+            return
+        }
+        
         let db = Firestore.firestore()
         db.collection("users").getDocuments { (snapshot, error) in
             if let error = error {
                 print("Error fetching contacts: \(error)")
             } else {
                 self.contacts = snapshot?.documents.compactMap { document in
-                    try? document.data(as: Contact.self)
+                    let contact = try? document.data(as: Contact.self)
+                    return contact?.email != currentUserEmail ? contact : nil
                 } ?? []
                 self.contactsView.tableView.reloadData()
             }
