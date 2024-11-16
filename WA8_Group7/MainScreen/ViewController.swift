@@ -36,7 +36,7 @@ class ViewController: UIViewController {
         }
     }
     
-    func fetchChats() {
+   func fetchChats() {
         guard let currentUserEmail = Auth.auth().currentUser?.email else {
             print("No user email found")
             return
@@ -45,68 +45,50 @@ class ViewController: UIViewController {
         let db = Firestore.firestore()
         db.collection("chats")
             .whereField("participants", arrayContains: currentUserEmail)
-            .order(by: "timestamp", descending: true)
-            .getDocuments { [weak self] (snapshot, error) in
-                guard let self = self else { return }
-                
-                if let error = error {
-                    print("Error fetching chats: \(error)")
-                    return
-                }
-                
-                var fetchedChats: [Chat] = []
-                let group = DispatchGroup() // Synchronize async calls
-                
-                snapshot?.documents.forEach { document in
-                    let data = document.data()
-                    guard let participants = data["participants"] as? [String],
-                          let lastMessage = data["lastMessage"] as? String,
-                          let timestamp = data["timestamp"] as? Timestamp else { return }
-                    
-                    let otherUserEmail = participants.first(where: { $0 != currentUserEmail }) ?? "Unknown"
-                    
-                    // Use DispatchGroup to handle async name fetching
-                    group.enter()
-                    self.getUserName(byEmail: otherUserEmail) { name in
-                        let otherUserName = name ?? otherUserEmail
-                        let chat = Chat(
-                            id: document.documentID,
-                            name: otherUserName,
-                            lastMessage: lastMessage,
-                            timestamp: timestamp.dateValue(),
-                            participants: participants
-                        )
-                        fetchedChats.append(chat)
-                        group.leave()
-                    }
-                }
-                
-                group.notify(queue: .main) {
-                    self.chats = fetchedChats.sorted(by: { $0.timestamp > $1.timestamp })
-                    self.mainScreen.tableView.reloadData()
-                }
-            }
-    }
-    
-    func getUserName(byEmail email: String, completion: @escaping (String?) -> Void) {
-        let db = Firestore.firestore()
-        db.collection("users")
-            .whereField("email", isEqualTo: email)
             .getDocuments { (snapshot, error) in
                 if let error = error {
-                    print("Error fetching user name: \(error)")
-                    completion(nil)
-                    return
-                }
-                
-                if let document = snapshot?.documents.first {
-                    let name = document.data()["name"] as? String
-                    completion(name)
+                    print("Error fetching chats: \(error)")
                 } else {
-                    print("No user found with email: \(email)")
-                    completion(nil)
+                    let documents = snapshot?.documents ?? []
+                    var chats: [Chat] = []
+                    let dispatchGroup = DispatchGroup()
+                    
+                    for document in documents {
+                        let data = document.data()
+                        guard let participants = data["participants"] as? [String],
+                            let lastMessage = data["lastMessage"] as? String,
+                            let timestamp = data["timestamp"] as? Timestamp else {
+                            continue
+                        }
+                        
+                        let otherUserEmail = participants.first(where: { $0 != currentUserEmail }) ?? "Unknown"
+                        dispatchGroup.enter()
+                        
+                        db.collection("users").whereField("email", isEqualTo: otherUserEmail).getDocuments { (snapshot, error) in
+                            var otherUserName = "Unknown"
+                            if let document = snapshot?.documents.first, let name = document.data()["name"] as? String {
+                                otherUserName = name
+                            }
+                            
+                            let chat = Chat(
+                                id: document.documentID,
+                                name: otherUserName,
+                                lastMessage: lastMessage,
+                                timestamp: timestamp.dateValue(),
+                                participants: participants
+                            )
+                            chats.append(chat)
+                            dispatchGroup.leave()
+                        }
+                    }
+                    
+                    dispatchGroup.notify(queue: .main) {
+                        self.chats = chats
+                        self.chats.sort { $0.timestamp > $1.timestamp }
+                        self.mainScreen.tableView.reloadData()
+                    }
                 }
-            }
+        }
     }
     
     override func viewDidLoad() {
