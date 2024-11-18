@@ -33,13 +33,12 @@ class ChatDetailViewController: UIViewController {
 
         fetchChatHistory()
         scrollToBottom(animated: false)
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboardOnTap))
-        tapRecognizer.cancelsTouchesInView = false
-        view.addGestureRecognizer(tapRecognizer)
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tapGesture)
     }
-    
-    @objc func hideKeyboardOnTap(){
-        //MARK: removing the keyboard from screen...
+
+    @objc func dismissKeyboard() {
         view.endEditing(true)
     }
     
